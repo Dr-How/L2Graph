@@ -605,115 +605,116 @@ for type in types:
             else:
                 Level2.append(g)
 
-##########################################
-# The following check the maximal groups #
-# See reference of Maxwell, 1998         #
-##########################################
+###########################################################################
+# The following implement the in Proposition 3.1 & 3.2 of (Maxwell, 1998) #
+# which find a subgroup of finite index, as a double-check.               #
+###########################################################################
 
-# def isA1(g): # Tell if the graph g is a A_n graph.  If yes, number the vertices in order.
-#     isom,map=graphs.PathGraph(g.order()).is_isomorphic(g,certify=true)
-#     if not isom:
-#         return false,None
-#     for u,v,l in g.edge_iterator():
-#         if l!=3:
-#             return false,None
-#     return true,map
-# 
-# def subgroup(g): #subgroups
-#     sub=[]
-#     for u,v,l in g.edges():
-#         g1=copy(g)
-#         g1.delete_edge(u,v)
-#         if (l==4 or l==6) and not g1.is_connected():
-#             gu=g.subgraph(g1.connected_component_containing_vertex(u))
-#             gv=g.subgraph(g1.connected_component_containing_vertex(v))
-#             h=copy(g)
-#             vuv=h.add_vertex()
-#             uvu=h.add_vertex()
-#             uinA1,mapu=isA1(gu)
-#             if gu.degree(u)<=1 and uinA1: 
-#                 if l==6:
-#                     h.add_edge(uvu,v,3)   
-#                 for w in gv.neighbor_iterator(v):
-#                     h.add_edge(uvu,w,g.edge_label(v,w))
-#                 if gu.degree(u)==1:
-#                     #for i in range(1):#maxwell1982
-#                     for i in range(gu.order()-1):#maxwell1998
-#                         if mapu[0]==u:
-#                             j=i+1
-#                         else:
-#                             j=gu.order()-i-2
-#                         h1=copy(h)
-#                         h1.add_edge(uvu,mapu[j],l) 
-#                         h1.delete_vertices([u,vuv])
-#                         sub.append(h1) 
-#                 else:
-#                     h1=copy(h); h1.delete_vertices([u,vuv])
-#                     sub.append(h1);                 
-#             vinA1,mapv=isA1(gv)
-#             if gv.degree(v)<=1 and vinA1:
-#                 if l==6:
-#                     h.add_edge(vuv,u,3)
-#                 for w in gu.neighbor_iterator(u):
-#                     h.add_edge(vuv,w,g.edge_label(u,w))
-#                 if gv.degree(v)==1:
-#                     #for i in range(1):#maxwell1982
-#                     for i in range(gv.order()-1):#maxwell1998
-#                         if mapv[0]==v:
-#                             j=i+1
-#                         else:
-#                             j=gv.order()-i-2
-#                         h2=copy(h)
-#                         h2.add_edge(vuv,mapv[j],l)
-#                         h2.delete_vertices([v,uvu]);
-#                         sub.append(h2)
-#                 else:
-#                     h2=copy(h); h2.delete_vertices([v,uvu])
-#                     sub.append(h2)
-#             if h.degree(uvu)>0 and h.degree(vuv)>0 and l==6:
-#                 h3=copy(h)
-#                 if gu.degree(u)==1:
-#                     h3.add_edge(gu.neighbors(u)[0],uvu,l)
-#                 if gv.degree(v)==1:
-#                     h3.add_edge(gv.neighbors(v)[0],vuv,l)
-#                 h3.delete_vertices([u,v])
-#                 sub.append(h3)     
-#     return sub
-# 
-# def maxgroup(list):
-#     maxl=copy(list)
-#     for g in list:
-#         subg=subgroup(g)
-#         for h in subg:
-#             i=0
-#             while i<len(maxl) and not h.is_isomorphic(maxl[i],edge_labels=true):
-#                 i=i+1
-#             if i<len(maxl):
-#                 h1=maxl.pop(i)
-#     return maxl
-#     
-# result={}
-# for k in range(5,12):
-#     all=[]
-#     for type in types:
-#         if k in type:
-#             all=all+type[k]
-#     result[k]=maxgroup(all)
-#     print "dimension:",k
-#     print "number of groups:",len(all)
-#     print "number of packings:",len(result[k])
-#     images=[]
-#     for g in result[k]:
-#         h=copy(g)
-#         for u,v,l in h.edges():
-#             if l==3:
-#                 h.set_edge_label(u,v,'')
-#         p=h.plot(vertex_labels=false,vertex_colors=coloring(g),vertex_size=30,edge_labels=true,edge_color='red')
-#         images.append(p)        
-#     n=floor(30/k)
-#     m=ceil(len(result[k])/n)     
-#     Image=graphics_array(images,m,n)
-#     filename="max"+'-'+str(g.order())+".eps"
-#     Image.save(filename,figsize=[8,k*m/4])
-#     #Image.show()
-#     print filename,"output"
+def isA(g): # Tell if the graph g is a A_n graph.  If yes, number the vertices in order.
+    isom,map=graphs.PathGraph(g.order()).is_isomorphic(g,certify=true)
+    if not isom:
+        return false,None
+    for u,v,l in g.edge_iterator():
+        if l!=3:
+            return false,None
+    return true,map
+
+def subgroup(g): #subgroups
+    sub=[]
+    for u,v,l in g.edges():
+        g1=copy(g)
+        g1.delete_edge(u,v)
+        if (l==4 or l==6) and not g1.is_connected():
+            gu=g.subgraph(g1.connected_component_containing_vertex(u))
+            gv=g.subgraph(g1.connected_component_containing_vertex(v))
+            h=copy(g)
+            vuv=h.add_vertex()
+            uvu=h.add_vertex()
+            uinA1,mapu=isA(gu)
+            if gu.degree(u)<=1 and uinA1: 
+                if l==6:
+                    h.add_edge(uvu,v,3)   
+                for w in gv.neighbor_iterator(v):
+                    h.add_edge(uvu,w,g.edge_label(v,w))
+                if gu.degree(u)==1:
+                    #for i in range(1):#maxwell1982
+                    for i in range(gu.order()-1): # maxwell, 1998
+                        if mapu[0]==u:
+                            j=i+1
+                        else:
+                            j=gu.order()-i-2
+                        h1=copy(h)
+                        h1.add_edge(uvu,mapu[j],l) 
+                        h1.delete_vertices([u,vuv])
+                        sub.append(h1) 
+                else:
+                    h1=copy(h); h1.delete_vertices([u,vuv])
+                    sub.append(h1);                 
+            vinA1,mapv=isA(gv)
+            if gv.degree(v)<=1 and vinA1:
+                if l==6:
+                    h.add_edge(vuv,u,3)
+                for w in gu.neighbor_iterator(u):
+                    h.add_edge(vuv,w,g.edge_label(u,w))
+                if gv.degree(v)==1:
+                    #for i in range(1):#maxwell1982
+                    for i in range(gv.order()-1): # maxwell, 1998
+                        if mapv[0]==v:
+                            j=i+1
+                        else:
+                            j=gv.order()-i-2
+                        h2=copy(h)
+                        h2.add_edge(vuv,mapv[j],l)
+                        h2.delete_vertices([v,uvu]);
+                        sub.append(h2)
+                else:
+                    h2=copy(h); h2.delete_vertices([v,uvu])
+                    sub.append(h2)
+            if h.degree(uvu)>0 and h.degree(vuv)>0 and l==6:
+                h3=copy(h)
+                if gu.degree(u)==1:
+                    h3.add_edge(gu.neighbors(u)[0],uvu,l)
+                if gv.degree(v)==1:
+                    h3.add_edge(gv.neighbors(v)[0],vuv,l)
+                h3.delete_vertices([u,v])
+                sub.append(h3)     
+    return sub
+
+def maxgroup(list):
+    maxl=copy(list)
+    for g in list:
+        subg=subgroup(g)
+        for h in subg:
+            i=0
+            while i<len(maxl) and not h.is_isomorphic(maxl[i],edge_labels=true):
+                i=i+1
+            if i<len(maxl):
+                h1=maxl.pop(i)
+    return maxl
+    
+# Conclusion and detailed comparison
+result={}
+for k in range(5,12):
+    all=[]
+    for type in types:
+        if k in type:
+            all=all+type[k]
+    result[k]=maxgroup(all)
+    print "dimension:",k
+    print "number of groups:",len(all)
+    print "number of packings:",len(result[k])
+    images=[]
+    for g in result[k]:
+        h=copy(g)
+        for u,v,l in h.edges():
+            if l==3:
+                h.set_edge_label(u,v,'')
+        p=h.plot(vertex_labels=false,vertex_colors=coloring(g),vertex_size=30,edge_labels=true,edge_color='red')
+        images.append(p)        
+    n=floor(30/k)
+    m=ceil(len(result[k])/n)     
+    Image=graphics_array(images,m,n)
+    filename="max"+'-'+str(g.order())+".eps"
+    Image.save(filename,figsize=[8,k*m/4])
+    #Image.show()
+    print filename,"output"
