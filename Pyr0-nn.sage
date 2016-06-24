@@ -1,3 +1,5 @@
+# Enumerate products of two simplices of level 2.
+
 load("Matrix.sage")
 
 def newL2(g0,g1,cabel):

@@ -1,3 +1,6 @@
+# If a (2, 0)-graph H has only two real vertices u and v, and H − u − v is of affine type, then we say that u + v is the hinge of H.
+# This program finds (2,0)-graphs with hinges.
+
 load("Matrix.sage")
 
 def OnlyTwoReal(g,u,v):
@@ -76,4 +79,4 @@ for g in L2Simplex:
 
 Image=graphics_array(Images,11,7)
 # Image.show(axes=false, figsize=[10,8])
-Image.save("L2Hinges.eps", axes=false, figsize=[7,11])
+Image.save("L2Hinges.eps", axes=false, figsize=[7,11]) # Output figure

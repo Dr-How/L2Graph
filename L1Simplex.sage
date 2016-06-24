@@ -1,3 +1,6 @@
+# Enumerate (1,0)-graphs.
+# Following the algorithm of (Chein 1969)
+
 load("Matrix.sage")
 
 def l1(g): # Recognise graphs of level 1
@@ -45,6 +48,10 @@ def isA1(g):
         if l!=3:
             return false,None
     return true,map
+
+##
+## Preparing level-0 graphs (affine or finite).
+##
 
 L0C=[] # affine Coxeter graphs in form of a cycle
 for i in range (3,10):
@@ -155,6 +162,10 @@ for g in L0T:
     print g.name(),sorted(M(g).change_ring(RDF).eigenvalues())[0:2]
 print len(L0T)
 
+##
+## List of level-0 graphs prepared.
+##
+
 L1C=[] # hyperbolic Coxeter graphs of level 1 in form of a cycle
 for G in L0P:
     for l in range(3,7):
@@ -225,14 +236,17 @@ for type in types:
     total+=len(type)
 print "We found ",total
 
-Level1=[]
-Level1S=[]
+Level1=[] # Full list
+Level1S=[] # Strict list
+
 for t in types:
     for g in t:
         if Strict(g):
             Level1S.append(g)
         else:
             Level1.append(g)
+
+# Special graphs
 
 G=graphs.CompleteGraph(4)
 Init(G)
@@ -249,6 +263,8 @@ G=graphs.CompleteBipartiteGraph(2,3)
 Init(G)
 G.set_pos({0:(2,0),1:(-2,0),2:(0,2),3:(0,0),4:(0,-2)})
 Level1.append(G)
+
+# test hinges
 
 def Hinge(g,v):
     d=g.order()

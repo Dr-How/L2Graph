@@ -1,3 +1,5 @@
+# This program contains functions that is used by other programs.
+
 # from sage.graphs.graph_plot import _line_embedding
 from sage.graphs.graph_plot import _circle_embedding
 
@@ -14,7 +16,7 @@ def M(g): # Coxeter matrix from graph
         m[v,u]=m[u,v]
     return m
 
-def minEig(Mat):
+def minEig(Mat): # Minimum eigenvalue
     m=copy(Mat).change_ring(RDF)
     mineig=min(m.eigenvalues())
     if abs(mineig)<0.000001:

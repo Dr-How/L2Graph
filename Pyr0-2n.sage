@@ -1,3 +1,7 @@
+# Enumerate products of a simplex and a triangle, of level 2.
+# The objective is to eliminate labels 7, 9 and >= 11
+# Following (Esselmann 2004), Section 4.1.
+
 load("Matrix.sage")
 
 def DetTriangle(k,l,m):
