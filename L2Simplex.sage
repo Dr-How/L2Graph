@@ -1,4 +1,4 @@
-from sage.graphs.graph_plot import _circle_embedding
+import sage.graphs.graph_plot
 
 def M(g): # Coxeter matrix from Coxeter graph
     d=g.order()
@@ -21,7 +21,7 @@ def L1(g): # Recognise graphs of level <=1
     d=g.order()
     M0=M(g)
     for i in range(d):
-        ind=range(d)
+        ind=list(range(d))
         ind.remove(i) # delete one vertex
         M1=M0[ind,ind]
         if minEig(M1)<0: # has negative eigenvalue, not positive semi-definite
@@ -38,7 +38,7 @@ def L2(g): # Recognise graphs of level 2
     M0=M(g)
     for i in range(d):
         for j in range(i+1,d):
-            ind=range(d)
+            ind=list(range(d))
             ind.remove(i) # delete two vertices
             ind.remove(j)
             M2=M0[ind,ind]
@@ -51,7 +51,7 @@ def Strict(g): # Tell if a L2 graph is strict
     M0=M(g)
     for i in range(d):
         for j in range(i+1,d):
-            ind=range(d)
+            ind=list(range(d))
             ind.remove(i)
             ind.remove(j)
             M2=M0[ind,ind]
@@ -85,15 +85,15 @@ def lchecked(g,list): # If g was already in the list
 def coloring(g): # Distinguish real vertices by colors
     color_dict={'black':[],'lightgray':[],'white':[]}
     B=M(g).change_ring(RDF)
-    W=B.I
+    W=B.inverse()
     for v in range(g.order()):
         norm=W.row(v)*B*W.column(v)
         if abs(norm-1)<0.0001: # Surreal vertices
             color_dict['lightgray'].append(v)
         elif norm>0.0001: # Real vertices
-            color_dict['white'].append(v)
-        else: #Imaginary vertices
             color_dict['black'].append(v)
+        else: #Imaginary vertices
+            color_dict['white'].append(v)
     return color_dict
 
 def output(type,s): # Output images
@@ -104,7 +104,7 @@ def output(type,s): # Output images
             for u,v,l in g.edges(): # Remove label 3 on the edges
                 if l==3:
                     h.set_edge_label(u,v,'')
-            p=h.plot(vertex_labels=false,vertex_colors=coloring(g),vertex_size=30,edge_labels=true,edge_color='red',graph_border=Strict(g))
+            p=h.plot(vertex_labels=false,vertex_colors=coloring(g),vertex_size=30,edge_labels=true,edge_color='red',graph_border=Strict(g),edge_labels_background='transparent')
             images.append(p)        
         n=floor(30/i) # Control the size of the figure array
         m=ceil(len(type[i])/n)
@@ -115,14 +115,17 @@ def output(type,s): # Output images
         else:
             Image.save(filename,figsize=[6,i*m/5])
         # Image.show()
-        print filename,"output"
+        print(filename,"output")
 
-print "George Maxwell found "+str(186+66+36+13+10+8+4) # For comparison
+print("George Maxwell found "+str(186+66+36+13+10+8+4)) # For comparison
 
 L0C=[] # affine Coxeter graphs in form of a cycle
 for i in range (3,10): # type ~A
     G=graphs.CycleGraph(i);Init(G)
-    _circle_embedding(G,G.vertices(),radius=i)
+    pos=G.layout_circular()
+    for jj in range(len(pos)):
+        pos[jj] = (pos[jj][0]*i, pos[jj][1]*i)
+    G.set_pos(pos)
     G.name('~A'+str(i));L0C.append(G)
 
 L0P=[] # affine and euclidean Coxeter graphs in form of a path
@@ -190,7 +193,7 @@ for i in range(3,8): # type ~D
     pos={}
     for j in range(i):
         pos[j]=(j,j)
-    pos[i]=(0,2);pos[i+1]=(i-3,i-1)
+    pos[i]=(0,2);pos[i+1]=(i-1,i-3)
     G.set_pos(pos);L0T.append(G)
 G=graphs.PathGraph(5);G.add_edges([(2,5),(5,6)]);Init(G);G.name('~E6'); # type ~E6
 pos={}
@@ -223,14 +226,14 @@ G.set_pos(pos);L0P.append(G)
 
 # Verify the eigenvalues of level 0 graphs
 for g in L0C:
-    print g.name(),sorted(M(g).change_ring(RDF).eigenvalues())[0:2]
-print len(L0C)
+    print(g.name(),sorted(M(g).change_ring(RDF).eigenvalues())[0:2])
+print(len(L0C))
 for g in L0P:
-    print g.name(),sorted(M(g).change_ring(RDF).eigenvalues())[0:2]
-print len(L0P)
+    print(g.name(),sorted(M(g).change_ring(RDF).eigenvalues())[0:2])
+print(len(L0P))
 for g in L0T:
-    print g.name(),sorted(M(g).change_ring(RDF).eigenvalues())[0:2]
-print len(L0T)
+    print(g.name(),sorted(M(g).change_ring(RDF).eigenvalues())[0:2])
+print(len(L0T))
 
 L1C=[] # hyperbolic Coxeter graphs of level 1 in the form of a cycle
 for G in L0P: # Construct from a path
@@ -242,11 +245,14 @@ for G in L0P: # Construct from a path
             if not lchecked(g,L1C):
                 g.name("L1C-"+G.name()+'-'+str(l)+str(k))
                 if l1(g):
-                    _circle_embedding(g,g.vertices(),radius=i+1)
+                    pos=g.layout_circular()
+                    for jj in range(len(pos)):
+                        pos[jj] = (pos[jj][0]*(i+1), pos[jj][1]*(i+1))
+                    g.set_pos(pos)
                     L1C.append(g)
 
 for g in L1C: # Verify eigenvalues
-    print g.name(),sorted(M(g).change_ring(RDF).eigenvalues())[0:2]
+    print(g.name(),sorted(M(g).change_ring(RDF).eigenvalues())[0:2])
 len(L1C)
 
 L1T=[] # hyperbolic Coxeter graphs of level 1 in form of a cycle
@@ -274,7 +280,7 @@ for G in L0T: # Construct from a tree
                     L1T.append(g)
 
 for g in L1T: # Verify eigenvalues
-    print g.name(),sorted(M(g).change_ring(RDF).eigenvalues())[0:2]
+    print(g.name(),sorted(M(g).change_ring(RDF).eigenvalues())[0:2])
 len(L1T)
 
 C={} # Coxeter graphs of level 2 in form of a cycle
@@ -295,7 +301,7 @@ for G in L1T: # Construct from a tree
                 g.set_pos(pos)
                 Check(g,T)
                     
-    isom,map=G.is_isomorphic(graphs.PathGraph(i),certify=true)
+    isom,map=G.is_isomorphic(graphs.PathGraph(i),certificate=true)
     if isom: # If the tree is actually a path
         for l in range(3,7):
             for k in range(3,7):
@@ -304,7 +310,10 @@ for G in L1T: # Construct from a tree
                 g.add_edges([(0,i,k),(i-1,i,l)]) # Create a cycle
                 if not dchecked(g,C):
                     g.name("C-"+G.name()+'-'+str(l)+str(k))
-                    _circle_embedding(g,g.vertices(),radius=i+1)
+                    pos=g.layout_circular()
+                    for jj in range(len(pos)):
+                        pos[jj] = (pos[jj][0]*(i+1), pos[jj][1]*(i+1))
+                    g.set_pos(pos)
                     Check(g,C)
                     
 output(C,"C")
@@ -341,14 +350,17 @@ for G in L1T: # Construct from a tree
                         g.add_edges([(leaves[(j+1)%3],i,l),(leaves[(j+2)%3],i,k)]) # Attach the other two leaves to a new vertex
                         if not dchecked(g,Ct):
                             h=graphs.CycleGraph(i); h.add_edge(0,i)
-                            isom,map=g.is_isomorphic(h,certify=true)
+                            isom,map=g.is_isomorphic(h,certificate=true)
                             g.relabel(map)
-                            _circle_embedding(g,range(i),radius=i)
+                            pos=g.layout_circular()
+                            for jj in range(len(pos)):
+                                pos[jj] = (pos[jj][0]*(i+1), pos[jj][1]*(i+1))
+                            g.set_pos(pos)
                             pos=g.get_pos(); pos[i]=(0,0); g.set_pos(pos)
                             g.name("Ct-"+G.name()+'-'+str(leaves[(j+1)%3])+str(leaves[(j+2)%3])+'-'+str(l)+str(k))
                             Check(g,Ct)
     if H[1]==2: # There are two leaves, i.e. a path
-        isom,map=G.is_isomorphic(graphs.PathGraph(i),certify=true) # Number the vertices in order
+        isom,map=G.is_isomorphic(graphs.PathGraph(i),certificate=true) # Number the vertices in order
         for l in range(3,7):
             for k in range(3,7):
                 g=copy(G)
@@ -356,9 +368,12 @@ for G in L1T: # Construct from a tree
                 g.add_edges([(1,i,k),(i-1,i,l)]) # Connect the second and the last to a new vertex
                 if not dchecked(g,Ct):
                     h=graphs.CycleGraph(i); h.add_edge(0,i)
-                    isom,map1=g.is_isomorphic(h,certify=true)
+                    isom,map1=g.is_isomorphic(h,certificate=true)
                     g.relabel(map1)
-                    _circle_embedding(g,range(i),radius=i)
+                    pos=g.layout_circular()
+                    for jj in range(len(pos)):
+                        pos[jj] = (pos[jj][0]*(i+1), pos[jj][1]*(i+1))
+                    g.set_pos(pos)
                     pos=g.get_pos(); pos[i]=(0,0); g.set_pos(pos)
                     g.name("Ct-sigma"+G.name()+'-'+str(l)+str(k))
                     Check(g,Ct)
@@ -367,9 +382,12 @@ for G in L1T: # Construct from a tree
                 g.add_edges([(0,i,k),(i-2,i,l)]) # Connect the first and the second last to a new vertex
                 if not dchecked(g,Ct):
                     h=graphs.CycleGraph(i); h.add_edge(0,i)
-                    isom,map1=g.is_isomorphic(h,certify=true)
+                    isom,map1=g.is_isomorphic(h,certificate=true)
                     g.relabel(map1)
-                    _circle_embedding(g,range(i),radius=i)
+                    pos=g.layout_circular()
+                    for jj in range(len(pos)):
+                        pos[jj] = (pos[jj][0]*(i+1), pos[jj][1]*(i+1))
+                    g.set_pos(pos)
                     pos=g.get_pos(); pos[i]=(0,0); g.set_pos(pos)
                     g.name("Ct\'-"+G.name()+'-'+str(l)+str(k))
                     Check(g,Ct)
@@ -593,7 +611,7 @@ for i in range(5,12):
         if i in type:
             number+=len(type[i])
     total+=number
-print "We found ",total
+print("We found ",total)
 
 Level2=[] # Output data for the use of other programs
 Level2S=[]
@@ -611,7 +629,7 @@ for type in types:
 ###########################################################################
 
 def isA(g): # Tell if the graph g is a A_n graph.  If yes, number the vertices in order.
-    isom,map=graphs.PathGraph(g.order()).is_isomorphic(g,certify=true)
+    isom,map=graphs.PathGraph(g.order()).is_isomorphic(g,certificate=true)
     if not isom:
         return false,None
     for u,v,l in g.edge_iterator():
@@ -700,16 +718,16 @@ for k in range(5,12):
         if k in type:
             all=all+type[k]
     result[k]=maxgroup(all)
-    print "dimension:",k
-    print "number of groups:",len(all)
-    print "number of packings:",len(result[k])
+    print("dimension:",k)
+    print("number of groups:",len(all))
+    print("number of packings:",len(result[k]))
     images=[]
     for g in result[k]:
         h=copy(g)
         for u,v,l in h.edges():
             if l==3:
                 h.set_edge_label(u,v,'')
-        p=h.plot(vertex_labels=false,vertex_colors=coloring(g),vertex_size=30,edge_labels=true,edge_color='red')
+        p=h.plot(vertex_labels=false,vertex_colors=coloring(g),vertex_size=30,edge_labels=true,edge_color='red',edge_labels_background='transparent')
         images.append(p)        
     n=floor(30/k)
     m=ceil(len(result[k])/n)     
@@ -717,4 +735,4 @@ for k in range(5,12):
     filename="max"+'-'+str(g.order())+".eps"
     Image.save(filename,figsize=[8,k*m/4])
     #Image.show()
-    print filename,"output"
+    print(filename,"output")
