@@ -99,13 +99,15 @@ def coloring(g): # Distinguish real vertices by colors
 def output(type,s): # Output images
     for i in type:
         images=[]
+        graphstr=""
         for g in type[i]:
             h=copy(g)
             for u,v,l in g.edges(): # Remove label 3 on the edges
                 if l==3:
                     h.set_edge_label(u,v,'')
             p=h.plot(vertex_labels=false,vertex_colors=coloring(g),vertex_size=30,edge_labels=true,edge_color='red',graph_border=Strict(g),edge_labels_background='transparent')
-            images.append(p)        
+            images.append(p)
+            graphstr=graphstr+h.graphviz_string(edge_labels=True)+"\n"
         n=floor(30/i) # Control the size of the figure array
         m=ceil(len(type[i])/n)
         Image=graphics_array(images,m,n) # Create an array of figures
@@ -116,6 +118,10 @@ def output(type,s): # Output images
             Image.save(filename,figsize=[6,i*m/5])
         # Image.show()
         print(filename,"output")
+        filename=s+'-'+str(g.order())+".txt" # Output txt file
+        with open(filename, "w") as f:
+            f.write(graphstr)
+            f.close()
 
 print("George Maxwell found "+str(186+66+36+13+10+8+4)) # For comparison
 
@@ -722,13 +728,15 @@ for k in range(5,12):
     print("number of groups:",len(all))
     print("number of packings:",len(result[k]))
     images=[]
+    graphstr=""
     for g in result[k]:
         h=copy(g)
         for u,v,l in h.edges():
             if l==3:
                 h.set_edge_label(u,v,'')
         p=h.plot(vertex_labels=false,vertex_colors=coloring(g),vertex_size=30,edge_labels=true,edge_color='red',edge_labels_background='transparent')
-        images.append(p)        
+        images.append(p)
+        graphstr=graphstr+h.graphviz_string(edge_labels=True)+"\n"
     n=floor(30/k)
     m=ceil(len(result[k])/n)     
     Image=graphics_array(images,m,n)
@@ -736,3 +744,7 @@ for k in range(5,12):
     Image.save(filename,figsize=[8,k*m/4])
     #Image.show()
     print(filename,"output")
+    filename="max"+'-'+str(g.order())+".txt" # Output txt file
+    with open(filename, "w") as f:
+        f.write(graphstr)
+        f.close()
