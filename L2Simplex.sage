@@ -91,9 +91,9 @@ def coloring(g): # Distinguish real vertices by colors
         if abs(norm-1)<0.0001: # Surreal vertices
             color_dict['lightgray'].append(v)
         elif norm>0.0001: # Real vertices
-            color_dict['black'].append(v)
-        else: #Imaginary vertices
             color_dict['white'].append(v)
+        else: #Imaginary vertices
+            color_dict['black'].append(v)
     return color_dict
 
 def output(type,s): # Output images
@@ -124,7 +124,7 @@ for i in range (3,10): # type ~A
     G=graphs.CycleGraph(i);Init(G)
     pos=G.layout_circular()
     for jj in range(len(pos)):
-        pos[jj] = (pos[jj][0]*i, pos[jj][1]*i)
+        pos[jj] = (pos[jj][1]*i, -pos[jj][0]*i)
     G.set_pos(pos)
     G.name('~A'+str(i));L0C.append(G)
 
@@ -247,7 +247,7 @@ for G in L0P: # Construct from a path
                 if l1(g):
                     pos=g.layout_circular()
                     for jj in range(len(pos)):
-                        pos[jj] = (pos[jj][0]*(i+1), pos[jj][1]*(i+1))
+                        pos[jj] = (pos[jj][1]*(i+1), -pos[jj][0]*(i+1))
                     g.set_pos(pos)
                     L1C.append(g)
 
@@ -312,7 +312,7 @@ for G in L1T: # Construct from a tree
                     g.name("C-"+G.name()+'-'+str(l)+str(k))
                     pos=g.layout_circular()
                     for jj in range(len(pos)):
-                        pos[jj] = (pos[jj][0]*(i+1), pos[jj][1]*(i+1))
+                        pos[jj] = (pos[jj][1]*(i+1), -pos[jj][0]*(i+1))
                     g.set_pos(pos)
                     Check(g,C)
                     
@@ -354,7 +354,7 @@ for G in L1T: # Construct from a tree
                             g.relabel(map)
                             pos=g.layout_circular()
                             for jj in range(len(pos)):
-                                pos[jj] = (pos[jj][0]*(i+1), pos[jj][1]*(i+1))
+                                pos[jj] = (pos[jj][1]*(i+1), -pos[jj][0]*(i+1))
                             g.set_pos(pos)
                             pos=g.get_pos(); pos[i]=(0,0); g.set_pos(pos)
                             g.name("Ct-"+G.name()+'-'+str(leaves[(j+1)%3])+str(leaves[(j+2)%3])+'-'+str(l)+str(k))
@@ -372,7 +372,7 @@ for G in L1T: # Construct from a tree
                     g.relabel(map1)
                     pos=g.layout_circular()
                     for jj in range(len(pos)):
-                        pos[jj] = (pos[jj][0]*(i+1), pos[jj][1]*(i+1))
+                        pos[jj] = (pos[jj][1]*(i+1), -pos[jj][0]*(i+1))
                     g.set_pos(pos)
                     pos=g.get_pos(); pos[i]=(0,0); g.set_pos(pos)
                     g.name("Ct-sigma"+G.name()+'-'+str(l)+str(k))
@@ -386,7 +386,7 @@ for G in L1T: # Construct from a tree
                     g.relabel(map1)
                     pos=g.layout_circular()
                     for jj in range(len(pos)):
-                        pos[jj] = (pos[jj][0]*(i+1), pos[jj][1]*(i+1))
+                        pos[jj] = (pos[jj][1]*(i+1), -pos[jj][0]*(i+1))
                     g.set_pos(pos)
                     pos=g.get_pos(); pos[i]=(0,0); g.set_pos(pos)
                     g.name("Ct\'-"+G.name()+'-'+str(l)+str(k))
