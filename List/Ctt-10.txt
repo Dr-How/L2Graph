@@ -1,0 +1,46 @@
+graph {
+  node_0  [label="0"];
+  node_1  [label="1"];
+  node_2  [label="2"];
+  node_3  [label="3"];
+  node_4  [label="4"];
+  node_5  [label="5"];
+  node_6  [label="6"];
+  node_7  [label="7"];
+  node_8  [label="8"];
+  node_9  [label="9"];
+
+  node_0 -- node_1 [label=""];
+  node_0 -- node_7 [label=""];
+  node_0 -- node_8 [label=""];
+  node_1 -- node_2 [label=""];
+  node_2 -- node_3 [label=""];
+  node_3 -- node_4 [label=""];
+  node_3 -- node_9 [label=""];
+  node_4 -- node_5 [label=""];
+  node_5 -- node_6 [label=""];
+  node_6 -- node_7 [label=""];
+}
+graph {
+  node_0  [label="0"];
+  node_1  [label="1"];
+  node_2  [label="2"];
+  node_3  [label="3"];
+  node_4  [label="4"];
+  node_5  [label="5"];
+  node_6  [label="6"];
+  node_7  [label="7"];
+  node_8  [label="8"];
+  node_9  [label="9"];
+
+  node_0 -- node_1 [label=""];
+  node_0 -- node_7 [label=""];
+  node_0 -- node_8 [label=""];
+  node_1 -- node_2 [label=""];
+  node_2 -- node_3 [label=""];
+  node_3 -- node_4 [label=""];
+  node_4 -- node_5 [label=""];
+  node_4 -- node_9 [label=""];
+  node_5 -- node_6 [label=""];
+  node_6 -- node_7 [label=""];
+}
